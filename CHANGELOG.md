@@ -24,3 +24,8 @@ Este proyecto adhiere a [Semantic Versioning](https://semver.org/).
 - Estructura inicial del repositorio del módulo.
 - Archivos base: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf`.
 - Archivo `.gitignore` para excluir archivos temporales de Terraform.
+
+## [1.0.1] - 2026-05-29
+
+### Changed
+- PR de revisión de código del módulo redes
