@@ -4,6 +4,44 @@ Todos los cambios notables en este módulo serán documentados en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 Este proyecto adhiere a [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] - 2026-06-29
+
+### Added
+- Variable `private_subnet_cidrs` (list(string), default: `[]`) para definir subredes privadas.
+- Variable `enable_nat_gateway` (bool, default: `false`) para habilitar NAT Gateway.
+- Recurso `aws_subnet.private` con soporte Multi-AZ mediante `count`.
+- Recurso `aws_eip.nat` para la IP elástica del NAT Gateway.
+- Recurso `aws_nat_gateway.main` para tráfico saliente desde subredes privadas.
+- Recurso `aws_route_table.private` con ruta por defecto hacia el NAT Gateway.
+- Recurso `aws_route_table_association.private` para asociar subredes privadas a la route table.
+- Output `private_subnet_ids`: IDs de las subredes privadas creadas.
+- Output `nat_gateway_id`: ID del NAT Gateway (null si no está habilitado).
+
+### Changed
+- Etiqueta `Type` agregada a las subredes públicas (`"public"`) y privadas (`"private"`).
+- `depends_on` en EIP y NAT Gateway para garantizar orden de creación con el IGW.
+- README.md actualizado con nuevas variables, outputs y ejemplo Multi-AZ.
+
+### Migration Guide (v1.x → v2.0.0)
+Esta versión es **retrocompatible**: si no se pasan `private_subnet_cidrs` ni
+`enable_nat_gateway`, el comportamiento es idéntico a v1.x. No se requieren
+cambios en configuraciones existentes que no usen subredes privadas.
+
+## [1.0.3] - 2026-05-29
+
+### Changed
+- Segunda revisión de código módulo redes por Juan Pablo
+
+## [1.0.2] - 2026-05-29
+
+### Changed
+- Revisión de código módulo redes por Juan Pablo
+
+## [1.0.1] - 2026-05-29
+
+### Changed
+- PR de revisión de código del módulo redes
+
 ## [1.0.0] - 2026-05-28
 
 ### Added
@@ -24,18 +62,3 @@ Este proyecto adhiere a [Semantic Versioning](https://semver.org/).
 - Estructura inicial del repositorio del módulo.
 - Archivos base: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf`.
 - Archivo `.gitignore` para excluir archivos temporales de Terraform.
-
-## [1.0.1] - 2026-05-29
-
-### Changed
-- PR de revisión de código del módulo redes
-
-## [1.0.2] - 2026-05-29
-
-### Changed
-- Revisión de código módulo redes por Juan Pablo
-
-## [1.0.3] - 2026-05-29
-
-### Changed
-- Segunda revisión de código módulo redes por Juan Pablo

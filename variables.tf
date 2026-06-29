@@ -1,5 +1,6 @@
 # ─────────────────────────────────────────────────────────────
 # variables.tf  –  Módulo Redes AUY1105-grupo-1
+# v2.0.0: agrega soporte Multi-AZ con subredes privadas y NAT
 # ─────────────────────────────────────────────────────────────
 
 variable "project_name" {
@@ -20,7 +21,7 @@ variable "public_subnet_cidrs" {
 }
 
 variable "availability_zones" {
-  description = "Lista de zonas de disponibilidad para las subredes públicas."
+  description = "Lista de zonas de disponibilidad para las subredes públicas y privadas."
   type        = list(string)
   default     = ["us-east-1a"]
 }
@@ -28,4 +29,18 @@ variable "availability_zones" {
 variable "ssh_allowed_cidr" {
   description = "CIDR IP autorizado para acceso SSH. No usar 0.0.0.0/0."
   type        = string
+}
+
+# ── Variables nuevas v2.0.0 ───────────────────────────────────
+
+variable "private_subnet_cidrs" {
+  description = "Lista de bloques CIDR para las subredes privadas. Si está vacío, no se crean subredes privadas."
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_nat_gateway" {
+  description = "Si true, crea un NAT Gateway en la primera subred pública para dar salida a Internet a las subredes privadas."
+  type        = bool
+  default     = false
 }
