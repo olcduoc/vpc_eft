@@ -50,3 +50,33 @@ requieren cambios en configuraciones existentes que no usen subredes privadas.
 - Estructura inicial del repositorio del módulo.
 - Archivos base: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf`.
 - Archivo `.gitignore` para excluir archivos temporales de Terraform.
+
+[2.1.0] - optimización (IE4.2.1)
+
+### Changed
+
+
+Refactor: subredes públicas y privadas migradas de bloques resource con count a
+for_each sobre locals (public_subnets, private_subnets), mejorando legibilidad y
+escalabilidad: agregar una 3ra AZ ahora solo requiere extender public_subnet_cidrs /
+availability_zones, sin duplicar bloques de código.
+aws_route_table_association.public y .private migrados al mismo patrón for_each.
+Outputs subnet_ids y private_subnet_ids ajustados para devolver list(string) ordenado
+a partir de los mapas for_each (sort(keys(...))), preservando exactamente el mismo
+contrato de salida que v2.0.0 — no rompe compatibilidad con root_eft.
+
+
+### Added
+
+
+moved.tf: bloques moved para migrar las direcciones de state de count ([0], [1])
+a for_each (["0"], ["1"]) sin destruir/recrear la infraestructura ya desplegada.
+
+
+Migration Guide (v2.0.0 → v2.1.0)
+
+Esta versión es retrocompatible en su interfaz pública (variables y outputs sin cambios).
+El único paso obligatorio es ejecutar terraform init -upgrade y luego terraform plan — los
+bloques moved se encargan de la migración de state automáticamente. Verificar que el plan
+resultante sea No changes o solo cambios de metadata (no debe mostrar destrucción de subredes,
+NAT Gateway ni route tables).

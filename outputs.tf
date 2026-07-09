@@ -1,6 +1,9 @@
 # ─────────────────────────────────────────────────────────────
 # outputs.tf  –  Módulo Redes AUY1105-grupo-1
-# v2.0.0: agrega outputs de subredes privadas y NAT Gateway
+# v2.1.0: adaptado a subredes for_each (ver main.tf)
+#         Los outputs mantienen el mismo tipo y orden que en v2.0.0
+#         (list(string), ordenados por índice) para no romper
+#         la interfaz que consume root_eft.
 # ─────────────────────────────────────────────────────────────
 
 output "vpc_id" {
@@ -9,8 +12,8 @@ output "vpc_id" {
 }
 
 output "subnet_ids" {
-  description = "Lista de IDs de las subredes públicas."
-  value       = aws_subnet.public[*].id
+  description = "Lista de IDs de las subredes públicas, en el mismo orden que public_subnet_cidrs."
+  value       = [for k in sort(keys(aws_subnet.public)) : aws_subnet.public[k].id]
 }
 
 output "security_group_id" {
@@ -18,11 +21,11 @@ output "security_group_id" {
   value       = aws_security_group.main.id
 }
 
-# ── Outputs nuevos v2.0.0 ─────────────────────────────────────
+# ── Outputs v2.0.0 ────────────────────────────────────────────
 
 output "private_subnet_ids" {
-  description = "Lista de IDs de las subredes privadas. Vacío si no se crearon subredes privadas."
-  value       = aws_subnet.private[*].id
+  description = "Lista de IDs de las subredes privadas, en el mismo orden que private_subnet_cidrs. Vacío si no se crearon subredes privadas."
+  value       = [for k in sort(keys(aws_subnet.private)) : aws_subnet.private[k].id]
 }
 
 output "nat_gateway_id" {
